@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ video.title }}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+</head>
+<body>
+
+    <div class="container mt-4 animate__animated animate__fadeIn">
+        <h1 class="animate__animated animate__fadeInDown">{{ video.title }}</h1>
+    
+        <p class="animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+            {{ video.description }}
+        </p>
+        
+        <video width="640" height="360" controls class="mt-3 animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
+            <source src="{{ videos.video_file.url }}" type="video/mp4">
+        </video>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7b5HUyIzcvosCODo/7K/tiTxD8HDU9/goOufw2Nqip9GczQ/tZzIvN/Qa/YUWIA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</body>
+</html>
