@@ -1,11 +1,74 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
-<head>
-    <title>{{ video.title }}</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-</head>
+    <head>
+        <title>{{ video.title }}</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+        <style>
+            
+            .navbar {
+                background-color: #000;
+                padding: 0.5rem 1rem;
+            }
+    
+            .navbar-brand {
+                color: #fff !important;
+                font-weight: 600;
+            }
+    
+            .nav-link { display: none; }
+    
+    
+    
+            body {
+                background-color: #181818;
+                color: #e0e0e0;
+                transition: background-color 0.3s ease, color 0.3s ease;
+            }
+    
+            .light-theme {
+                background-color: #f8f9fa;
+                color: #343a40;
+            }
+    
+    
+            #theme-toggle {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background-color: #343a40;
+                color: white;
+                border: none;
+                padding: 10px 15px;
+                border-radius: 5px;
+                cursor: pointer;
+                z-index: 100;
+                transition: background-color 0.3s ease, color 0.3s ease;
+            }
+            .light-theme #theme-toggle{
+                background-color: #6c757d;
+                color: white;
+            }
+    
+            .light-theme #theme-toggle:hover {
+                background-color: #5a6268;
+            }
+    
+            #theme-toggle:hover {
+                background-color: #23272b;
+            }
+            .logo {
+            height: 40px; 
+        }
+        </style>
+    </head>
 <body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand animate__animated animate__fadeInDown" href="#">
+            <img src="{% static 'images/logo_white.svg' %}" alt="Logo" class="logo">
+        </a>
+    </nav>
 
     <div class="container mt-4 animate__animated animate__fadeIn">
         <h1 class="animate__animated animate__fadeInDown">{{ video.title }}</h1>
@@ -17,7 +80,17 @@
         <video width="640" height="360" controls class="mt-3 animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
             <source src="{{ videos.video_file.url }}" type="video/mp4">
         </video>
-    </div>
+    <button id="theme-toggle">Светлая тема</button>
+
+    <script>
+        const toggleButton = document.getElementById('theme-toggle');
+        const body = document.body;
+
+        toggleButton.addEventListener('click', () => {
+            body.classList.toggle('light-theme');
+            toggleButton.textContent = body.classList.contains('light-theme') ? 'Темная тема' : 'Светлая тема';
+        });
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7b5HUyIzcvosCODo/7K/tiTxD8HDU9/goOufw2Nqip9GczQ/tZzIvN/Qa/YUWIA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
 </html>

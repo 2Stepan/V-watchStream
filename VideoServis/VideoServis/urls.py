@@ -27,5 +27,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.video_list, name='video_list'),
     path('video/<int:pk>/', views.video_detail, name='video_detail'),
+    path("", include("VideoApp.urls")),
+    
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
