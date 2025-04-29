@@ -1,10 +1,11 @@
-from django.shortcuts import render, get_object_or_404
-
-from VideoApp.models import Video
-from django.shortcuts import render, redirect
+from django.shortcuts import render, get_object_or_404, redirect
+from django.db.models import Q
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
-from .forms import RegisterForm
+
+
+from VideoApp.models import Video, Comment, Like
+from VideoApp.forms import CommentForm, RegisterForm
 # Create your views here.
 
 def video_list(request):
@@ -12,9 +13,27 @@ def video_list(request):
     return render(request, 'video/Video_list.html', {'videos': videos})
 
 def video_detail(request, pk):
-    videos = get_object_or_404(Video, pk=pk)
-    return render(request, 'video/Video_detail.html', {'videos': videos})
+    video = get_object_or_404(Video, pk=pk)
+    comments = video.comments.all()
+    form = CommentForm(request.POST or None)
+    liked = request.user.is_authenticated and Like.objects.filter(video=video, user=request.user).exists()
 
+    if 'comment_submit' in request.POST and form.is_valid():
+        comment = form.save(commit=False)
+        comment.video = video
+        comment.author = request.user
+        comment.save()
+        return redirect('video_detail', pk=video.pk)
+
+    elif 'like_submit' in request.POST and request.user.is_authenticated:
+        like, created = Like.objects.get_or_create(video=video, user=request.user)
+        if not created:
+            like.delete()
+        return redirect('video_detail', pk=video.pk) # redirect после обработки лайка
+
+
+    context = {'video': video, 'comments': comments, 'form': form, 'liked': liked}
+    return render(request, 'video/video_detail.html', context)
 
 
 
@@ -48,3 +67,34 @@ def logout_view(request):
 
 def video_list_view(request):
     return render(request, "video_list.html")
+
+
+# коменты и видео
+
+
+# поиск по названию и хештегам
+def search_videos(request):
+    search_query = request.GET.get('q', '')
+    hashteg_filter = request.GET.get('hashteg', '')
+
+    videos = Video.objects.all()
+    
+    if search_query:
+        videos = videos.filter(
+            Q(title__icontains=search_query) |
+            Q(description__icontains=search_query)
+        )
+    
+    if hashteg_filter:
+        videos = videos.filter(hashteg__iexact=hashteg_filter)
+        
+    all_hashtegs = Video.objects.exclude(
+        Q(hashteg__isnull=True) | Q(hashteg__exact='')
+    ).values_list('hashteg', flat=True).distinct()
+    
+    return render(request, 'video/Video_list.html', {
+        'videos': videos,
+        'all_hashtegs': all_hashtegs,
+        'search_query': search_query,
+        'current_hashteg': hashteg_filter
+    })
