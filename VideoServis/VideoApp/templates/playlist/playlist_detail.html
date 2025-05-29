@@ -1,0 +1,39 @@
+{% extends "video/Video_list.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>{{ playlist.title }}</h1>
+        <a href="{% url 'playlist_list' %}" class="btn btn-outline-secondary">Назад к плейлистам</a>
+    </div>
+
+    <p>{{ playlist.description }}</p>
+
+    <div class="row">
+        {% for playlist_video in playlist.playlistvideo_set.all %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                {% if playlist_video.video.thumbnail %}
+                <img src="{{ playlist_video.video.thumbnail.url }}" class="card-img-top" alt="{{ playlist_video.video.title }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ playlist_video.video.title }}</h5>
+                    <p class="card-text">{{ playlist_video.video.description|truncatechars:100 }}</p>
+                    <a href="{% url 'video_detail' playlist_video.video.pk %}" class="btn btn-primary">Смотреть</a>
+                    <form method="post" action="{% url 'remove_from_playlist' playlist.pk playlist_video.video.pk %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Удалить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                В этом плейлисте пока нет видео.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
