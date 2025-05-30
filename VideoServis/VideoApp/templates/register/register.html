@@ -17,7 +17,7 @@
         }
 
         body.light-theme {
-            background-color: #f0f0f0;
+            background-color:rgb(112, 97, 97);
             color: #333;
         }
 
@@ -101,7 +101,8 @@
             
             <!-- Поля ввода с placeholder -->
             <input type="text" name="username" placeholder="Имя пользователя" required>
-            <input type="password" name="password" placeholder="Пароль" required>
+            <input type="password" name="password1" placeholder="Пароль" required>
+            <input type="password" name="password2" placeholder="Повторите пароль" required>
             
             <button type="submit">Зарегистрироваться</button>
             <a href="{% url 'login'  %}" style="margin-top: 5%; text-decoration: none; font-size: 85%; color: #000000;">Есть аккаунт</a>

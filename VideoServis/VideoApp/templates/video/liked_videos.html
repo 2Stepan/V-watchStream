@@ -1,0 +1,193 @@
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Service</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        body {
+            background-color: #121212; /* Темный фон по умолчанию */
+            color: #ffffff; /* Белый текст по умолчанию */
+            font-family: Arial, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .navbar {
+            background-color: #1e1e1e; /* Темный цвет навигационной панели */
+        }
+        .navbar-brand img {
+            max-width: 150px;
+        }
+        .nav-left {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+        }
+        .profile {
+            color: white;
+            margin-right: 20px;
+        }
+        .search-form {
+            position: relative;
+        }
+        .search-form input {
+            border-radius: 5px;
+            padding: 10px;
+            border: none;
+            width: 300px;
+            background-color: #2a2a2a; /* Цвет фона поля ввода */
+            color: #ffffff; /* Цвет текста */
+        }
+        .search-form button {
+            position: absolute;
+            right: 0;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            background-color: #007bff; /* Цвет кнопки поиска */
+            color: white;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+        .search-form button:hover {
+            background-color: #0056b3; /* Цвет кнопки при наведении */
+        }
+        .container {
+            margin-top: 30px;
+        }
+        .card {
+            transition: transform 0.2s, box-shadow 0.2s;
+            background-color: #1e1e1e; /* Цвет фона карточки */
+            border: none; /* Убрать границу карточки */
+        }
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); /* Тень при наведении */
+        }
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+        .card-text {
+            color: #b3b3b3; /* Цвет текста в карточке */
+        }
+        #theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #007bff; /* Цвет кнопки переключения темы */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease;
+        }
+        
+        #theme-toggle:hover {
+            background-color: #0056b3; /* Цвет кнопки при наведении */
+        }
+        
+        /* Светлая тема стили */
+        body.light-theme {
+            background-color:rgb(160, 135, 135); /* Светлый фон */
+            color: #000000; /* Черный текст */
+        }
+        body.light-theme .navbar {
+            background-color:rgb(0, 0, 0); /* Светлый цвет навигационной панели */
+        }
+        body.light-theme .search-form input {
+            background-color: #ffffff; /* Цвет фона поля ввода в светлой теме */
+            color: #000000; /* Цвет текста в светлой теме */
+        }
+        body.light-theme .card {
+            background-color: #ffffff; /* Цвет фона карточки в светлой теме */
+            border: 1px solid #ddd; /* Граница карточки в светлой теме */
+        }
+        body.light-theme .card-text {
+            color: #333333; /* Цвет текста в карточке в светлой теме */
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand animate__animated animate__fadeInDown" href="{% url 'video_list' %}">
+            <img src="{% static 'images/logo_white.svg' %}" alt="Logo" class="logo">
+        </a>
+        <div class="nav-left">
+            {% if user.is_authenticated %}
+                <div class="profile">
+                    <span>{{ user.username }}</span>
+                </div>
+            {% endif %}
+        </div>
+        <a href="{% url 'logout' %}" class="btn btn-outline-light ml-3"><i class="fas fa-sign-out-alt"></i> Выйти</a>
+    </nav>
+
+    
+    
+        <div class="container mt-5">
+            <h2 class="text-center mb-4">Понравившиеся видео</h2>
+    
+            <!-- Результаты -->
+            <div class="row">
+                {% for video in videos %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        {% if video.thumbnail %}
+                        <img src="{{ video.thumbnail.url }}" class="card-img-top" alt="{{ video.title }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ video.title }}</h5>
+                            <p class="card-text">{{ video.description|truncatechars:100 }}</p>
+                            {% if video.hashteg %}
+                            <div class="mb-2">
+                                <span class="badge badge-primary">{{ video.hashteg }}</span>
+                            </div>
+                            {% endif %}
+                            <a href="{% url 'video_detail' video.pk %}" class="btn btn-primary">Смотреть</a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-warning">
+                        У вас нет понравившихся видео.
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    
+    <!-- Остальной код без изменений -->
+    <button id="theme-toggle">Светлая тема</button>
+    <script>
+        const toggleButton = document.getElementById('theme-toggle');
+        const body = document.body;
+
+        toggleButton.addEventListener('click', () => {
+            body.classList.toggle('light-theme');
+            toggleButton.textContent = body.classList.contains('light-theme') ? 'Темная тема' : 'Светлая тема';
+        });
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const hashtagSearch = document.getElementById('hashtag-search');
+            if (hashtagSearch) {
+                hashtagSearch.addEventListener('input', function(e) {
+                    const search = e.target.value.toLowerCase();
+                    document.querySelectorAll('.hashtegs a').forEach(tag => {
+                        const tagText = tag.textContent.toLowerCase();
+                        tag.style.display = tagText.includes(search) ? '' : 'none';
+                    });
+                });
+            }
+        });
+        </script>
+</body>
+</html>

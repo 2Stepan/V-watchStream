@@ -7,166 +7,221 @@
     <title>{{ video.title }}</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
     <style>
         body {
-            background-color: #121212; /* Темный фон по умолчанию */
-            color: #ffffff; /* Белый текст по умолчанию */
-            font-family: Arial, sans-serif;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            background-color: #121212;
+            color: #ffffff;
         }
-
-        .navbar {
-            background-color: #1e1e1e; /* Темный цвет навигационной панели */
+        .light-theme {
+            background-color:rgb(160, 135, 135); /* Светлый фон */
+            color: #000000;
         }
-
-        .navbar-brand img {
-            max-width: 150px;
-            cursor: pointer; /* Указатель на лого */
+        .nav-left {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
         }
-
+        .profile {
+            color: white;
+            margin-right: 20px;
+        }
+        .search-form {
+            position: relative;
+        }
+        .search-form input {
+            border-radius: 5px;
+            padding: 10px;
+            border: none;
+            width: 300px;
+            background-color: #2a2a2a; /* Цвет фона поля ввода */
+            color: #ffffff; /* Цвет текста */
+        }
+        .search-form button {
+            position: absolute;
+            right: 0;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            background-color: #007bff; /* Цвет кнопки поиска */
+            color: white;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+        .search-form button:hover {
+            background-color: #0056b3; /* Цвет кнопки при наведении */
+        }
         .container {
-            margin-top: 40px;
+            display: flex;
+            margin-top: 20px;
+            width: 150%;
+            flex: 0 0 66.67%;
+            padding-right: 20px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
+        }
+        .video-section {
+            flex-grow: 3;
+            margin-right: 80px; /* Отступ между колонками */
+            border-radius: 8px;
+        }
+        .recommendations-section {
+            float: right;
+            flex: 100%;
+            max-width: 400px; 
+            background-color:rgb(12, 12, 12);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
 
-        h1, h2 {
-            font-weight: bold;
-        }
-
-        video {
-            width: 100%;
-            max-width: 640px;
-            border-radius: 5px;
-            background-color: #000; /* Черный фон для видео */
-        }
-
-        #theme-toggle {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: #007bff; /* Цвет кнопки переключения темы */
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 15px;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s ease;
-        }
-
-       
-
-        #theme-toggle:hover {
-            background-color: #0056b3; /* Цвет кнопки при наведении */
-        }
-
-        /* Светлая тема стили */
-        body.light-theme {
-            background-color: #ffffff; /* Светлый фон */
-            color: #000000; /* Черный текст */
+        .video-card {
+            width: 100%; /* Ширина на 100% от родительского контейнера */
+            height: 300px; /* Фиксированная высота */
+            overflow: hidden; /* Скрыть переполнение */
         }
         
-        body.light-theme .navbar {
-            background-color: #f8f9fa; /* Светлый цвет навигационной панели */
+        .video-card img {
+            width: 100%; /* Ширина изображения на 100% */
+            height: auto; /* Высота автоматически подстраивается */
+            object-fit: cover; /* Объект будет обрезан по краям, чтобы заполнить контейнер */
         }
         
-        body.light-theme video {
-            background-color: #f0f0f0; /* Светлый фон для видео в светлой теме */
+        .card-body {
+            height: 175px; /* Фиксированная высота для текстовой части */
+            overflow: hidden; /* Скрыть переполнение текста */
+            color:rgb(255, 255, 255);
+            background-color:rgb(13, 13, 13);
         }
 
-        .divider {
-            border-top: 1px solid #444; /* Разделительная линия */
-            margin: 50px 0; /* Отступы сверху и снизу */
-        }
 
+        .video-container {
+            margin-bottom: 20px;
+            aspect-ratio: 1;
+        }
         .comment-form {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             margin-top: 20px;
-            max-width: 500px; /* Фиксированная ширина формы */
-            border: 1px solid #444; /* Обводка формы */
+        }
+        .divider {
+            height: 1px;
+            background-color:rgb(12, 12, 12);
+            margin: 20px 0;
+        }
+        .comment {
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
             border-radius: 5px;
-            padding: 15px; /* Внутренние отступы */
-            background-color: rgba(255, 255, 255, 0.1); /* Полупрозрачный фон */
+            margin-bottom: 10px;
         }
-
-        .comment-form button {
-            background-color: #007bff; /* Цвет кнопки отправки комментария */
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
+        .navbar {
+            background-color: #1a1a1a;
         }
-
-        .comment-form button:hover {
-            background-color: #0056b3; /* Цвет кнопки при наведении */
-        }
-
-        .back-button {
-            display: inline-block;
-            margin-top: 20px;
-            text-decoration: none;
-            color: #007bff; /* Цвет ссылки */
-        }
-
-        .back-button:hover {
-            text-decoration: underline; /* Подчеркивание при наведении */
+        .navbar-brand img {
+            width: 100px; /* Установите нужный размер логотипа */
         }
     </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
-        <a class="navbar-brand animate__animated animate__fadeInDown" href="#">
-            <a href="{% url 'video_list' %}"><img src="{% static 'images/logo_white.svg' %}" alt="Logo" class="logo"></a>
+        <a class="navbar-brand" href="{% url 'video_list' %}">
+            <img src="{% static 'images/logo_white.svg' %}" alt="Logo" class="logo">
         </a>
-    </nav>
-    <div class="container mt-4 animate__animated animate__fadeIn">
-        <video controls class="mt-3 animate__animated animate__fadeInUp" style="animation-delay: 0.4s;">
-            <source src="{{ video.video_file.url }}" type="video/mp4">
-            Ваш браузер не поддерживает видео тег.
-        </video>
-
-        <h1 class="mt-3 animate__animated animate__fadeInDown">{{ video.title }}</h1>
-        <p class="animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
-            {{ video.description }}
-        </p>
-
-        <button id="theme-toggle">Светлая тема</button>
-
-        <form method="post" class="mt-3">
-            {% csrf_token %}
-            <button type="submit" name="like_submit" class="btn btn-outline-primary">
-                {% if liked %}
-                    Убрать лайк
-                {% else %}
-                    Поставить лайк
-                {% endif %}
-            </button>
-        </form>
-        
-        <p style="margin-top: 20px; margin-bottom: 1rem;">Количество лайков: {{ video.likes.count }}</p>
-
-        <div class="divider"></div> <!-- Разделительная линия -->
-
-        <h2>Комментарии</h2>
-        <ul class="list-unstyled">
-        {% for comment in comments %}
-            <li class="mb-2">
-                <p><strong>{{ comment.author.username }}:</strong> {{ comment.text }}</p>
-                <p class="text-muted">{{ comment.created_at }}</p>
-                <div class="divider"></div> <!-- Разделительная линия между комментариями -->
-            </li>
-        {% endfor %}
-        </ul>
-
-        <h2>Добавить комментарий</h2>
-        <div class="comment-form">
-            <form method="post">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" name="comment_submit">Отправить</button>
+        <div class="nav-left">
+            {% if user.is_authenticated %}
+                <div class="profile">
+                    <span>{{ user.username }}</span>
+                </div>
+            {% endif %}
+            <form method="get" action="{% url 'search_videos' %}" class="search-form">
+                <input type="text" name="q" placeholder="Поиск..." value="{{ search_query }}">
+                <button type="submit"><i class="fas fa-search"></i></button>
             </form>
         </div>
+        <a href="{% url 'logout' %}" class="btn btn-outline-light ml-3"><i class="fas fa-sign-out-alt"></i> Выйти</a>
+    </nav>
+    <div class="container animateanimated animatefadeIn d-flex">
+        <div class="video-section"> <!-- Видео занимает 2/3 -->
+            <div class="video-container">
+                <video controls style="width: 105%; height: auto;">
+                    <source src="{{ video.video_file.url }}" type="video/mp4">
+                    Ваш браузер не поддерживает видео тег.
+                </video>
+    
+                <h1 class="mt-3">{{ video.title }}</h1>
+                <p>{{ video.description }}</p>
+    
+                <button id="theme-toggle" class="btn btn-secondary">Светлая тема</button>
+    
+                <form method="post" class="mt-3">
+                    {% csrf_token %}
+                    <button type="submit" name="like_submit" class="btn btn-outline-primary">
+                        {% if liked %}
+                            Убрать лайк
+                        {% else %}
+                            Поставить лайк
+                        {% endif %}
+                    </button>
+                </form>
+                
+                <p style="margin-top: 20px; margin-bottom: 1rem;">Количество лайков: {{ video.likes.count }}</p>
+    
+                <div class="divider"></div> <!-- Разделительная линия -->
+    
+                <h3>Комментарии</h3>
+                <ul class="list-unstyled">
+                {% for comment in comments %}
+                    <li class="comment">
+                        <p><strong>{{ comment.author.username }}:</strong> {{ comment.text }}</p>
+                        <p class="text-muted">{{ comment.created_at }}</p>
+                        <div class="divider"></div> <!-- Разделительная линия между комментариями -->
+                    </li>
+                {% endfor %}
+                </ul>
+                <h4>Добавить комментарий</h4>
+                <div class="comment-form">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" name="comment_submit" class="btn btn-primary">Отправить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    
+        <div class="recommendations-section"> <!-- Рекомендации занимают 1/3 -->
+            <h3>Рекомендации</h3>
+            <div class="row">
+                {% for recommended_video in recommended_videos %}
+                <div class="col-md-12 mb-4"> <!-- Изменено на col-md-12 для вертикального расположения -->
+                    <div class="card h-100">
+                        {% if recommended_video.thumbnail %}
+                        <img src="{{ recommended_video.thumbnail.url }}" class="card-img-top" alt="{{ recommended_video.title }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ recommended_video.title }}</h5>
+                            <p class="card-text">{{ recommended_video.description|truncatechars:100 }}</p>
+                            {% if recommended_video.hashteg %}
+                            <div class="mb-2">
+                                <span class="badge badge-primary">{{ recommended_video.hashteg }}</span>
+                            </div>
+                            {% endif %}
+                            <a href="{% url 'video_detail' recommended_video.pk %}" class="btn btn-primary">Смотреть</a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-warning">
+                        Рекомендованные видео не найдены.
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
-
+    
     <script>
         const toggleButton = document.getElementById('theme-toggle');
         const body = document.body;

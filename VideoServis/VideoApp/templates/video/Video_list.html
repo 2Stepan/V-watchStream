@@ -84,18 +84,18 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             transition: background-color 0.3s ease;
         }
-        
+
         #theme-toggle:hover {
             background-color: #0056b3; /* Цвет кнопки при наведении */
         }
-        
+
         /* Светлая тема стили */
         body.light-theme {
-            background-color: #ffffff; /* Светлый фон */
+            background-color:rgb(160, 135, 135); /* Светлый фон */
             color: #000000; /* Черный текст */
         }
         body.light-theme .navbar {
-            background-color: #f8f9fa; /* Светлый цвет навигационной панели */
+            background-color:rgb(0, 0, 0); /* Светлый цвет навигационной панели */
         }
         body.light-theme .search-form input {
             background-color: #ffffff; /* Цвет фона поля ввода в светлой теме */
@@ -112,7 +112,7 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
-        <a class="navbar-brand animate__animated animate__fadeInDown" href="#">
+        <a class="navbar-brand animate__animated animate__fadeInDown" href="{% url 'video_list' %}">
             <img src="{% static 'images/logo_white.svg' %}" alt="Logo" class="logo">
         </a>
         <div class="nav-left">
@@ -120,12 +120,15 @@
                 <div class="profile">
                     <span>{{ user.username }}</span>
                 </div>
+                <a href="{% url 'liked_videos' %}" class="btn btn-outline-light ml-3">любимое</a>
+                <a href="{% url 'history_videos' %}" class="btn btn-outline-light ml-3">История просмотров</a>
             {% endif %}
             <form method="get" action="{% url 'search_videos' %}" class="search-form">
                 <input type="text" name="q" placeholder="Поиск..." value="{{ search_query }}">
                 <button type="submit"><i class="fas fa-search"></i></button>
             </form>
         </div>
+        <a href="{% url 'logout' %}" class="btn btn-outline-light ml-3"><i class="fas fa-sign-out-alt"></i> Выйти</a>
     </nav>
 
     <main>
@@ -134,25 +137,24 @@
     </main>
 
     <div class="container mt-5">
-        <h1 class="text-center mb-4">Результаты поиска</h1>
-    
+
         <!-- Фильтр по хештегам -->
         <div class="hashteg-filter mb-4">
             <h5>Фильтр по хештегам:</h5>
             <div class="hashtegs">
-                <a href="?q={{ search_query }}" 
+                <a href="?q={{ search_query }}"
                    class="hashteg {% if not current_hashteg %}active{% endif %}">
                     Все
                 </a>
                 {% for tag in all_hashtegs %}
-                    <a href="?q={{ search_query }}&hashteg={{ tag|urlencode }}" 
+                    <a href="?q={{ search_query }}&hashteg={{ tag|urlencode }}"
                        class="hashteg {% if current_hashteg == tag %}active{% endif %}">
                         {{ tag }}
                     </a>
                 {% endfor %}
             </div>
         </div>
-    
+
         <!-- Результаты -->
         <div class="row">
             {% for video in videos %}
@@ -182,7 +184,7 @@
             {% endfor %}
         </div>
     </div>
-    
+
     <!-- Остальной код без изменений -->
     <button id="theme-toggle">Светлая тема</button>
     <script>
@@ -211,6 +213,6 @@
                 });
             }
         });
-        </script>
+    </script>
 </body>
 </html>
