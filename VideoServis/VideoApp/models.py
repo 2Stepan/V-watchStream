@@ -26,3 +26,11 @@ class Comment(models.Model):
 class Like(models.Model):
     video = models.ForeignKey(Video, on_delete=models.CASCADE, related_name='likes')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+class VideoView(models.Model):
+    video = models.ForeignKey(Video, on_delete=models.CASCADE, related_name='views')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    viewed_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-viewed_at']
